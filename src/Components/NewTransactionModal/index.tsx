@@ -1,8 +1,7 @@
 import Modal from 'react-modal';
-import { TransactionsContext } from '../../TransactionsContext';
+import { useTransactions } from '../../hooks/useTransactions';
 
-import { FormEvent, useState,  useContext } from 'react';
-import { api } from '../../Services/api';
+import { FormEvent, useState } from 'react';
 
 import fecharImg from '../../assents/x.svg';
 import entradasImg from '../../assents/Entradas.svg';
@@ -16,21 +15,27 @@ interface NewTransactionModalprops{
 }
 
 export function NewTransactionModal({isOpen, onRequestClose}: NewTransactionModalprops ){
-const { createTransection } = useContext(TransactionsContext);
+const { createTransection } = useTransactions();
 const [title, setTitle] = useState('');
 const [amount, setAmount] = useState(0);
 const [category, setCategory] = useState('');
 const [type, setType] = useState('deposit');
 
-function handleCreateNewTransaction(event:  FormEvent){
+async function handleCreateNewTransaction(event:  FormEvent){
 event.preventDefault();
 
-createTransection({
+await createTransection({
     title,
     amount,
     category,
     type,
 })
+
+setTitle('');
+setAmount(0);
+setCategory('');
+setType('');
+onRequestClose();
 }
 
     return (
@@ -76,8 +81,8 @@ createTransection({
 
                     <RadioBox 
                     type="button"
-                    onClick={() => { setType('withdram'); }}
-                    isActive={type === 'withdram'}
+                    onClick={() => { setType('withdraw'); }}
+                    isActive={type === 'withdraw'}
                     activeColor="red"
                     >
                         <img src={saidaImg} alt="Saida" />
